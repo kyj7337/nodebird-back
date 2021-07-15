@@ -6,12 +6,19 @@ const session = require('express-session');
 const dotenv = require('dotenv');
 const { sequelize, User } = require('./models');
 const indexRouter = require('./routes');
+const authRouter = require('./routes/auth');
+const postRouter = require('./routes/post');
+const passport = require('passport');
+const passportConfig = require('./passport');
+const cors = require('cors');
 dotenv.config();
 
 const pageRouter = require('./routes/page'); // 폴더 만들지 않음.
 const app = express();
+passportConfig();
 const { PORT, COOKIE_SECRET, NODE_ENV } = process.env;
 app.set('port', PORT);
+app.use(cors());
 app.use(morgan('dev'));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
@@ -20,7 +27,10 @@ sequelize
   .then((res) => {
     console.log('DB연결성공');
   })
-  .catch(() => {});
+  .catch((res) => {
+    console.log(res);
+    console.log('연결실패?');
+  });
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser(COOKIE_SECRET));
 app.use(
@@ -34,8 +44,12 @@ app.use(
     },
   })
 );
-
+// app.use('/img', express.static(path.join(__dirname, 'uploads')));
+app.use(passport.initialize());
+app.use(passport.session());
 app.use('/g1', indexRouter);
+app.use('/auth', authRouter);
+app.use('/post', postRouter);
 
 app.use((req, res, next) => {
   const { method, url } = req;

@@ -1,9 +1,9 @@
 {
   "development": {
     "username": "root",
-    "password": "0000",
-    "database": "nodebird",
-    "host": "127.0.0.1",
+    "password": "dudwns9404",
+    "database": "sys",
+    "host": "node-test-second.crzuuv4tmfd1.ap-northeast-2.rds.amazonaws.com",
     "dialect": "mysql"
   }
 }
